@@ -2,7 +2,7 @@ import streamlit as st
 
 # Page Configuration
 st.set_page_config(
-    page_title="AI E-Commerce & Marketing Studio",
+    page_title="Mya Marketing Ai Studio",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -69,7 +69,7 @@ with st.sidebar:
 
 # Main Header
 st.markdown('<div class="main-header">⚡ Cross-Border AI E-Com & Marketing Studio</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">အွန်လိုင်းစျေးသည်များ၊ TikTok/Facebook Creators များအတွက် AI ဖြင့် အရောင်းစာသားနှင့် ဗီဒီယိုဇာတ်ညွှန်းများ ဖန်တီးပေးသည့် စနစ်</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">အွန်လိုင်းစျေးသည်များ၊ TikTok/Facebook Creators များအတွက် AI ဖြင့် အရောင်းစာသားနှင့် ဗီဒီယိုဇာတ်ညွှန်းများ လွယ်ကူစွာ ဖန်တီးပါ</div>', unsafe_allow_html=True)
 
 # Tabs for Features
 tab1, tab2, tab3 = st.tabs(["📝 Facebook/Social အရောင်းပို့စ်", "🎬 TikTok/Reels Video Script", "🌐 ၃ ဘာသာ အရောင်းကူးပြောင်းမှု"])
