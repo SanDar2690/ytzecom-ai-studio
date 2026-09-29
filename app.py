@@ -1,184 +1,320 @@
 import streamlit as st
+import time
 
 # Page Configuration
 st.set_page_config(
-    page_title="Mya Marketing Ai Studio",
-    page_icon="⚡",
+    page_title="Mya Marketing AI Studio",
+    page_icon="💎",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom Styling
+# Custom High-End Styling (Modern Glassmorphism & Gradient Theme)
 st.markdown("""
-    <style>
-    .main-header {
-        font-size: 2.2rem;
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    /* Top Banner / Hero */
+    .hero-container {
+        background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #312E81 100%);
+        padding: 2.2rem 1.8rem;
+        border-radius: 20px;
+        color: white;
+        margin-bottom: 1.8rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .hero-title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, #38BDF8, #818CF8, #C084FC);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.4rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.05rem;
+        color: #CBD5E1;
+        line-height: 1.6;
+    }
+
+    /* Feature Badge */
+    .pro-tag {
+        display: inline-block;
+        background: linear-gradient(90deg, #F59E0B, #D97706);
+        color: #FFF;
+        font-size: 0.75rem;
         font-weight: 700;
-        color: #1E88E5;
-        margin-bottom: 0.2rem;
+        padding: 4px 12px;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 0.8rem;
     }
-    .sub-header {
+
+    /* Result Card Preview */
+    .preview-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 24px rgba(149, 157, 165, 0.08);
+        margin-top: 1rem;
+    }
+    
+    .preview-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366F1, #8B5CF6);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
         font-size: 1.1rem;
-        color: #555;
-        margin-bottom: 1.5rem;
+        margin-right: 12px;
     }
-    .badge-pro {
-        background-color: #FFD700;
-        color: #000;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-weight: bold;
-        font-size: 0.8rem;
+    
+    /* Stats / Metric pills */
+    .metric-pill {
+        background: #F1F5F9;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        color: #334155;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
-    </style>
+</style>
 """, unsafe_allow_html=True)
 
-# Session State for Monetization / Credits
-if "user_credits" not in st.session_state:
-    st.session_state.user_credits = 5
-if "is_pro" not in st.session_state:
-    st.session_state.is_pro = False
+# State Management
+if "credits" not in st.session_state:
+    st.session_state.credits = 5
+if "is_vip" not in st.session_state:
+    st.session_state.is_vip = False
+if "generated_history" not in st.session_state:
+    st.session_state.generated_history = []
 
-# Sidebar: Monetization & Settings
+# Sidebar Controls
 with st.sidebar:
-    st.title("⚙️ Monetization & Settings")
+    st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80", use_container_width=True)
+    st.title("💎 Mya Marketing AI")
+    st.caption("Next-Gen E-Commerce & Creative Studio")
     
-    st.markdown("### 💳 အကောင့် အခြေအနေ")
-    if st.session_state.is_pro:
-        st.markdown('<span class="badge-pro">PRO MEMBER ✨</span> (Unlimited Access)', unsafe_allow_html=True)
+    st.markdown("---")
+    st.subheader("👑 အကောင့် အဆင့်အတန်း")
+    if st.session_state.is_vip:
+        st.success("✨ VIP PRO MEMBER (အကန့်အသတ်မဲ့)")
     else:
-        st.markdown(f"**အခမဲ့ ကျန်ရှိသော Credits:** `{st.session_state.user_credits}` ကြိမ်")
-        if st.session_state.user_credits <= 2:
-            st.warning("⚠️ Credits နည်းပါးနေပါပြီ။ Pro သို့ အဆင့်မြှင့်တင်ပါ။")
+        st.markdown(f"""
+        <div class="metric-pill">
+            ⚡ ကျန်ရှိသော အခမဲ့ Credits: <b>{st.session_state.credits}</b>
+        </div>
+        """, unsafe_allow_html=True)
+        st.write("")
+        if st.session_state.credits <= 2:
+            st.warning("Credits နည်းပါးနေပါသည်။ VIP သို့ တိုးမြှင့်ပါ!")
         
-        st.markdown("---")
-        st.markdown("#### 🚀 Pro သို့ အဆင့်မြှင့်တင်ရန် (Monetization)")
-        st.write("• Unlimited Copy & Script Generation")
-        st.write("• 3 Languages (မြန်မာ၊ ไทย၊ English)")
-        st.write("• 24/7 VIP AI Access")
-        
-        if st.button("💎 Upgrade to Pro ($5 / 20,000 MMK)"):
-            st.session_state.is_pro = True
-            st.success("🎉 Pro အဖြစ်သို့ အောင်မြင်စွာ ပြောင်းလဲပြီးပါပြီ!")
-            st.rerun()
+        with st.expander("💳 VIP အဆင့်မြှင့်တင်ရန် (Monetize)"):
+            st.write("• Unlimited High-Converting Copies")
+            st.write("• 3-Language Auto Marketing")
+            st.write("• Viral TikTok Storyboard")
+            st.markdown("**လစဉ်ကြေး:** `၂၀,၀၀၀ MMK` / `$5`")
+            st.info("KPay / Wave / PromptPay: `09xxxxxxxxx`")
+            if st.button("🚀 VIP ရယူမည်"):
+                st.session_state.is_vip = True
+                st.balloons()
+                st.rerun()
 
     st.markdown("---")
-    api_key = st.text_input("🔑 Google Gemini API Key:", type="password", help="Google AI Studio မှ အခမဲ့ API Key ကို ထည့်သွင်းပါ")
-    if not api_key:
-        st.info("💡 API Key မရှိသေးပါက Demo Mode ဖြင့် စမ်းသပ်နိုင်ပါသည်။")
+    gemini_key = st.text_input("🔑 Google Gemini API Key:", type="password", help="Google AI Studio မှ အခမဲ့ API Key ကို ထည့်ပါ")
+    st.caption("API Key မထည့်ပါက စမတ် Template စနစ်ဖြင့် အခမဲ့ ထုတ်ပေးပါမည်။")
 
-# Main Header
-st.markdown('<div class="main-header">⚡ Cross-Border AI E-Com & Marketing Studio</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">အွန်လိုင်းစျေးသည်များ၊ TikTok/Facebook Creators များအတွက် AI ဖြင့် အရောင်းစာသားနှင့် ဗီဒီယိုဇာတ်ညွှန်းများ လွယ်ကူစွာ ဖန်တီးပါ</div>', unsafe_allow_html=True)
+# Hero Banner
+st.markdown("""
+<div class="hero-container">
+    <span class="pro-tag">⚡ AI-Powered Growth Engine</span>
+    <div class="hero-title">Mya Marketing AI Studio</div>
+    <div class="hero-subtitle">
+        အွန်လိုင်းစီးပွားရေးလုပ်ငန်းရှင်များ၊ တေးသံရှင်များနှင့် Content Creator များအတွက် လူကြိုက်များစေမည့် အရောင်းစာသား၊ ကြော်ငြာနှင့် ဗီဒီယိုဇာတ်ညွှန်းများ ဖန်တီးပေးသည့် အဆင့်မြင့် စနစ်
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
-# Tabs for Features
-tab1, tab2, tab3 = st.tabs(["📝 Facebook/Social အရောင်းပို့စ်", "🎬 TikTok/Reels Video Script", "🌐 ၃ ဘာသာ အရောင်းကူးပြောင်းမှု"])
+# Main Navigation Tabs
+tab_copy, tab_video, tab_trans, tab_ideas = st.tabs([
+    "🔥 အရောင်းစာသား (Sales Copy)", 
+    "🎬 TikTok / Reels Script", 
+    "🌐 ၃ ဘာသာ ကူးပြောင်းမှု", 
+    "💡 Marketing & Ad Ideas"
+])
 
-# Tab 1: Facebook / Social Post Generator
-with tab1:
-    st.subheader("📌 Social Media & Facebook Sales Post Generator")
-    col1, col2 = st.columns(2)
+# ----------------- TAB 1: High-Converting Sales Copy -----------------
+with tab_copy:
+    st.subheader("📝 Professional Sales Copy & Ad Post Generator")
+    c1, c2 = st.columns()
     
-    with col1:
-        p_name = st.text_input("ကုန်ပစ္စည်း အမည်:", placeholder="ဥပမာ - TWS Wireless Earbuds Pro")
-        p_price = st.text_input("စျေးနှုန်း / ပရိုမိုးရှင်း:", placeholder="ဥပမာ - ၂၅,၀၀၀ ကျပ် (ပုံမှန် ၃၅,၀၀၀)")
-        p_features = st.text_area("အဓိက အချက်အလက်များ:", placeholder="ဥပမာ - ဘက်ထရီ ၂၄ နာရီခံ၊ ရေစိုခံ၊ Bass သံကောင်း၊ Free Delivery")
-        p_tone = st.selectbox("စာသားစတိုင်:", ["ဆွဲဆောင်မှုပြင်းထန်သော (Hard Sell)", "ဇာတ်လမ်းဆန်ဆန် (Storytelling)", "ခေတ်ဆန်ပြီး တက်ကြွသော (Trendy / Gen Z)"])
-        p_target_lang = st.selectbox("ဘာသာစကား ရွေးချယ်ပါ:", ["မြန်မာစာ (Burmese)", "English", "ภาษาไทย (Thai)"], key="t1_lang")
+    with c1:
+        prod_title = st.text_input("📦 ကုန်ပစ္စည်း / ဝန်ဆောင်မှု အမည်:", placeholder="ဥပမာ - Mya Wireless Noise-Cancelling Earbuds")
+        col_p1, col_p2 = st.columns(2)
+        with col_p1:
+            prod_price = st.text_input("🏷️ စျေးနှုန်း (Price / Promo):", placeholder="ဥပမာ - ၂၉,၀၀၀ ကျပ် (ပုံမှန် ၄၅,၀၀၀)")
+        with col_p2:
+            target_platform = st.selectbox("🎯 တင်မည့် ပလက်ဖောင်း:", ["Facebook Page Post", "TikTok Caption", "Shopee / Lazada Listing", "Telegram Channel"])
+            
+        prod_highlights = st.text_area("✨ အဓိက အားသာချက်များနှင့် အာမခံချက်များ:", placeholder="ဥပမာ - အသံစနစ်အရမ်းကောင်း၊ ရေစိုခံ၊ ဘက်ထရီ ၂၄ နာရီခံ၊ ပစ္စည်းစစ်စစ် ၁ နှစ်အာမခံ၊ အိမ်ရောက်ငွေချေစနစ်")
         
-        btn_generate_post = st.button("✨ အရောင်းစာသား ဖန်တီးပါ", key="btn_post")
-        
-    with col2:
-        st.markdown("### 📋 ရလဒ် (Output):")
-        if btn_generate_post:
-            if not p_name:
-                st.error("ကုန်ပစ္စည်းအမည် ထည့်သွင်းပေးပါ။")
-            elif not st.session_state.is_pro and st.session_state.user_credits <= 0:
-                st.error("❌ သင်၏ အခမဲ့ Credits ကုန်ဆုံးသွားပါပြီ။ Pro အဆင့်သို့ တိုးမြှင့်ပါ။")
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            tone_style = st.selectbox("🎭 စာသားစတိုင် (Tone):", [
+                "ဆွဲဆောင်မှုပြင်းထန်သော (Urgent & High Converting)",
+                "ဇာတ်လမ်းဆန်ဆန် စိတ်ဝင်စားဖွယ် (Emotional Storytelling)",
+                "ခေတ်ဆန်ပြီး လူငယ်ကြိုက် (Gen-Z & Trendy)",
+                "Luxury & Professional (အဆင့်မြင့် လူကြီးလူကောင်းဆန်ဆန်)"
+            ])
+        with col_s2:
+            lang_opt = st.selectbox("🌐 ရလဒ် ဘာသာစကား:", ["မြန်မာဘာသာ (Burmese)", "English", "ภาษาไทย (Thai)"])
+            
+        generate_btn = st.button("🚀 စာသားဖန်တီးပါ (Generate Sales Copy)", use_container_width=True)
+
+    with c2:
+        st.markdown("### 📱 Social Media Live Preview")
+        if generate_btn:
+            if not prod_title:
+                st.error("ကျေးဇူးပြု၍ ကုန်ပစ္စည်းအမည် ထည့်သွင်းပေးပါ။")
+            elif not st.session_state.is_vip and st.session_state.credits <= 0:
+                st.error("❌ သင်၏ အခမဲ့ Credits ကုန်ဆုံးသွားပါပြီ။ VIP Pro အဆင့်သို့ တိုးမြှင့်ပါ။")
             else:
-                if not st.session_state.is_pro:
-                    st.session_state.user_credits -= 1
-                
-                output_post = f"""
-🔥 **【 {p_name} - အထူးလျော့စျေး ပရိုမိုးရှင်း! 】** 🔥
-
-{p_features} တွေ အပြည့်အစုံပါဝင်ပြီး လူကြိုက်အများဆုံးဖြစ်နေတဲ့ {p_name} ကို အခုပဲ အထူးစျေးနှုန်း **{p_price}** ဖြင့် ရရှိနိုင်ပါပြီ! 💥
-
-✨ **အဘယ်ကြောင့် လက်မလွှတ်သင့်သလဲ?**
-✅ အရည်အသွေး ၁၀၀% အာမခံ
-✅ လက်တွေ့ဘဝတွင် အလွန်အသုံးဝင်ပြီး ခေတ်မီခြင်း
-✅ ပစ္စည်းအရေအတွက် ကန့်သတ်ထားသဖြင့် အမြန်ဆုံး မှာယူလိုက်ပါ!
-
-📦 **အမှာစာတင်ရန်:**
-👉 အခုပဲ Page Chat (Inbox) သို့ "Order" ဟု ပို့ပြီး အထူးလက်ဆောင် ရယူလိုက်ပါ။
-🚚 အိမ်အရောက် ငွေချေစနစ် (COD) ဖြင့် အဆင်ပြေစွာ ဝယ်ယူနိုင်ပါသည်။
-
-#{p_name.replace(' ', '')} #OnlineShopping #BestDeals #Promotion
-"""
-                st.text_area("Generated Copy (Copy to clipboard)", value=output_post.strip(), height=350)
-                st.success("✅ စာသား အောင်မြင်စွာ ဖန်တီးပြီးပါပြီ!")
-
-# Tab 2: TikTok / Reels Video Script
-with tab2:
-    st.subheader("🎬 TikTok / Reels High-Converting Video Script")
-    col_v1, col_v2 = st.columns(2)
-    
-    with col_v1:
-        v_product = st.text_input("ဗီဒီယို ရိုက်ကူးမည့် ပစ္စည်း:", placeholder="ဥပမာ - အစွန်းချွတ် ဆပ်ပြာရည်", key="v_prod")
-        v_target_audience = st.text_input("ပစ်မှတ် ပရိသတ်:", placeholder="ဥပမာ - အိမ်ရှင်မများ၊ လူငယ်များ", key="v_aud")
-        v_hook_style = st.selectbox("Hook စတိုင် (ပထမ ၃ စက္ကန့် ဆွဲဆောင်မှု):", [
-            "ပြဿနာကို ထောက်ပြခြင်း (Problem-Agitate)",
-            "မယုံနိုင်စရာ ရလဒ် ပြသခြင်း (Before/After Shock)",
-            "လျှို့ဝှက်ချက် ဖော်ထုတ်ခြင်း (Curiosity / Secret)"
-        ])
-        btn_generate_script = st.button("🎥 Video Script ထုတ်လုပ်ပါ", key="btn_script")
-        
-    with col_v2:
-        st.markdown("### 🎬 Video Script & Shot List:")
-        if btn_generate_script:
-            if not v_product:
-                st.error("ပစ္စည်းအမည် ထည့်သွင်းပေးပါ။")
-            elif not st.session_state.is_pro and st.session_state.user_credits <= 0:
-                st.error("❌ သင်၏ အခမဲ့ Credits ကုန်ဆုံးသွားပါပြီ။ Pro အဆင့်သို့ တိုးမြှင့်ပါ။")
-            else:
-                if not st.session_state.is_pro:
-                    st.session_state.user_credits -= 1
+                if not st.session_state.is_vip:
+                    st.session_state.credits -= 1
                     
-                script_output = f"""
-🎯 **Title: {v_product} Viral TikTok Script (15 - 30 Seconds)**
+                with st.spinner("AI ဖြင့် အကောင်းဆုံး အရောင်းစာသားကို ဖန်တီးနေပါသည်..."):
+                    time.sleep(0.8)
+                    
+                final_post = f"""🔥 【 {prod_title.upper()} - ကာလတို အထူးပရိုမိုးရှင်း 】 🔥
 
-⏱️ **[0:00 - 0:03] The Hook (လူကြည့်ရပ်တန့်စေမည့် အစပိုင်း):**
-• *Visual:* ပစ္စည်း၏ အံ့အားသင့်ဖွယ် လုပ်ဆောင်ချက် သို့မဟုတ် ညစ်ပတ်နေသော နေရာကို ချက်ချင်းပြပါ။
-• *Audio / Voiceover:* "ဒီပစ္စည်းကို မသုံးဖူးသေးရင် သင် အမှားကြီး မှားနေပါပြီ! ဒါမှမဟုတ် အချိန်တွေ အများကြီး ကုန်နေတုန်းလား?"
+စိတ်မချမ်းသာစရာ အသံအရည်အသွေးညံ့တာတွေ၊ အားမခံတာတွေကို မေ့လိုက်ပါတော့! ❌
+လူကြိုက်အများဆုံးနှင့် Review အကောင်းဆုံး ရရှိထားသည့် {prod_title} ကို အခုပဲ အထူးစျေးနှုန်း {prod_price} ဖြင့် ရရှိနိုင်ပါပြီ! ✨
 
-⏱️️ **[0:04 - 0:15] The Body & Solution (ပြဿနာဖြေရှင်းပုံ):**
-• *Visual:* {v_product} ကို လက်တွေ့ စတင်အသုံးပြုပြပါ။
-• *Audio / Voiceover:* "အရင်က နာရီပေါင်းများစွာ အချိန်ယူရတဲ့ အလုပ်ကို {v_product} နဲ့ဆို စက္ကန့်ပိုင်းအတွင်း အလွယ်တကူ ပြီးမြောက်စေပါတယ်။ {v_target_audience} တွေအတွက် မရှိမဖြစ်ပါပဲ!"
+💎 အဘယ်ကြောင့် လူတိုင်း ရွေးချယ်ကြသလဲ?
+{prod_highlights}
 
-⏱️ **[0:16 - 0:25] Call to Action (ဝယ်ယူရန် တိုက်တွန်းချက်):**
-• *Visual:* ပစ္စည်းဘူး သို့မဟုတ် Profile / Link နေရာကို လက်ညှိုးထိုးပြပါ။
-• *Audio / Voiceover:* "အောက်က အဝါရောင် ခြင်းတောင်းလေးမှာ အခုပဲ အထူးစျေးနဲ့ အမြန်ဝယ်ယူလိုက်ပါ!"
-"""
-                st.text_area("Video Script", value=script_output.strip(), height=350)
-                st.success("✅ ဗီဒီယိုဇာတ်ညွှန်း ထုတ်လုပ်ပြီးပါပြီ!")
+👉 ပစ္စည်းအရေအတွက် ကန့်သတ်ထားသဖြင့် အခွင့်အရေးကို လက်မလွှတ်ပါနှင့်!
 
-# Tab 3: Cross-Border Translator
-with tab3:
-    st.subheader("🌐 Cross-Border 3-Language Translator (မြန်မာ ↔ ไทย ↔ English)")
-    source_text = st.text_area("ဘာသာပြန်လိုသော စာသားကို ထည့်ပါ:", placeholder="ကုန်ပစ္စည်း အချက်အလက် သို့မဟုတ် အရောင်းစာသား...")
+📦 အမှာစာတင်ရန်:
+💬 အခုပဲ Page Chat (Inbox) သို့ "ORDER" ဟု စာပို့လိုက်ပါ!
+🚚 တစ်နိုင်ငံလုံး အိမ်အရောက် ငွေချေစနစ် (COD) ဖြင့် အဆင်ပြေစွာ ရရှိနိုင်ပါသည်။
+
+#{prod_title.replace(' ', '')} #MyaMarketing #BestDeals #OnlineShop #TrendingNow"""
+
+                st.markdown(f"""
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <div class="avatar">M</div>
+                        <div>
+                            <b style="color: #0F172A;">Mya Official Store</b><br>
+                            <small style="color: #64748B;">Sponsored • Just now • 🌍</small>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.text_area("📋 Generated Copy (Copy အလွယ်တကူ ကူးယူရန်):", value=final_post, height=280)
+                st.success("✅ စာသား အောင်မြင်စွာ ထွက်ရှိပါပြီ! အပေါ်က စာသားကို Copy ယူ၍ တိုက်ရိုက် တင်နိုင်ပါပြီ။")
+
+# ----------------- TAB 2: TikTok / Reels Video Script Studio -----------------
+with tab_video:
+    st.subheader("🎬 Viral TikTok & Reels Video Script Studio")
+    v_col1, v_col2 = st.columns()
     
-    col_t1, col_t2, col_t3 = st.columns(3)
-    if st.button("🔄 ဘာသာစကား ၃ မျိုးသို့ ပြောင်းလဲပါ"):
-        if source_text:
-            with col_t1:
-                st.markdown("**🇲🇲 မြန်မာဘာသာ:**")
-                st.info(source_text)
-            with col_t2:
-                st.markdown("**🇹🇭 ภาษาไทย:**")
-                st.success("สินค้าคุณภาพสูง จัดส่งรวดเร็ว มีบริการเก็บเงินปลายทาง สนใจสั่งซื้อทักแชทได้เลยครับ")
-            with col_t3:
+    with v_col1:
+        v_name = st.text_input("🎥 ဗီဒီယို ပြုလုပ်မည့် အကြောင်းအရာ/ပစ္စည်း:", placeholder="ဥပမာ - အစွန်းချွတ် ဆပ်ပြာရည် သို့မဟုတ် သီချင်းအသစ် Promote")
+        v_duration = st.select_slider("⏱️️ ဗီဒီယို ကြာချိန် (စက္ကန့်):", options=["15s", "30s", "60s"], value="30s")
+        v_hook = st.selectbox("⚡ ပထမ ၃ စက္ကန့် Hook စတိုင်:", [
+            "အာရုံစူးစိုက်စေသော မေးခွန်း (Pattern Interrupt)",
+            "မယုံနိုင်စရာ ရလဒ်အရင်ပြခြင်း (Shocking Before/After)",
+            "လူအများစု မသိသေးသော လျှို့ဝှက်ချက် (Insider Secret)"
+        ])
+        btn_v_script = st.button("🎥 Video Script ထုတ်လုပ်ပါ", use_container_width=True)
+        
+    with v_col2:
+        if btn_v_script:
+            if not v_name:
+                st.error("အကြောင်းအရာ အရင်ထည့်ပေးပါခင်ဗျာ။")
+            else:
+                st.markdown("### 🎬 Shot-by-Shot Video Storyboard")
+                script_text = f"""🎯 Project: {v_name} ({v_duration} Viral Video)
+
+📍 [0:00 - 0:03] THE HOOK (မျက်စိဖမ်းစားမည့် အဖွင့်):
+• Visual: ပစ္စည်း၏ အံ့အားသင့်ဖွယ် အလုပ်လုပ်ပုံကို Close-up ပြပါ။
+• Voiceover: "ဒီနည်းလမ်းကို မသိသေးရင် သင် ငွေတွေရော အချိန်တွေပါ အလဟဿ ဖြုန်းနေတုန်းပဲ!"
+• On-Screen Text: "STOP SCROLLING! ⚠️"
+
+📍 [0:04 - 0:18] THE VALUE & DEMO (ပြဿနာဖြေရှင်းပြသခြင်း):
+• Visual: {v_name} ကို လက်တွေ့ အသုံးပြုပြသပြီး ချက်ချင်း ရလဒ်ကောင်းကို ပြသပါ။
+• Voiceover: "အရင်က အချိန်နာရီပေါင်းများစွာ ပေးရပေမယ့် အခု {v_name} နဲ့ဆို စက္ကန့်ပိုင်းအတွင်း အကုန် အဆင်ပြေသွားပါပြီ!"
+• Music: Fast, upbeat trending sound
+
+📍 [0:19 - 0:30] CALL TO ACTION (ရောင်းအားတက်စေမည့် အဆုံးသတ်):
+• Visual: မျက်နှာပြင် အောက်နားက Link / အဝါရောင်ခြင်းတောင်းကို လက်ညှိုးထိုးပြပါ။
+• Voiceover: "အထူးစျေးနှုန်း မကုန်ခင် အောက်က Link မှာ အခုပဲ ချက်ချင်းမှာယူလိုက်ပါ!"
+"""
+                st.text_area("Script Details:", value=script_text, height=320)
+                st.info("💡 Pro Tip: TikTok တွင် တင်ပါက Trending Music ကို Volume 15% ထားပြီး အသံ Voiceover ကို 100% ရှင်းလင်းစွာ ထားပါ။")
+
+# ----------------- TAB 3: Cross-Border Translation -----------------
+with tab_trans:
+    st.subheader("🌐 Cross-Border 3-Language Instant Converter")
+    st.caption("မြန်မာ၊ ထိုင်း နှင့် အင်္ဂလိပ် ၃ ဘာသာဖြင့် နိုင်ငံတကာ နယ်စပ်ဖြတ်ကျော် ရောင်းဝယ်ဖောက်ကားမှုများအတွက်")
+    
+    in_text = st.text_area("ဘာသာပြန်လိုသော ကုန်ပစ္စည်း စာသားကို ထည့်ပါ:", placeholder="ဥပမာ - ကုန်ပစ္စည်းစစ်စစ် ဖြစ်ပြီး အိမ်အရောက်ငွေချေစနစ်ဖြင့် ပို့ဆောင်ပေးပါသည်...")
+    if st.button("🔄 ၃ ဘာသာသို့ တစ်ပြိုင်နက် ပြောင်းလဲပါ", use_container_width=True):
+        if in_text:
+            col_m, col_th, col_en = st.columns(3)
+            with col_m:
+                st.markdown("**🇲🇲 Myanmar:**")
+                st.success(in_text)
+            with col_th:
+                st.markdown("**🇹🇭 ภาษาไทย (Thai):**")
+                st.info("สินค้าคุณภาพพรีเมียม รับประกันของแท้ 100% พร้อมบริการเก็บเงินปลายทาง สนใจสั่งซื้อได้เลยครับ")
+            with col_en:
                 st.markdown("**🇬🇧 English:**")
-                st.warning("High quality product with fast nationwide delivery. Cash on delivery available. Order now via inbox!")
+                st.warning("Premium authentic quality with 100% satisfaction guarantee. Cash on delivery available nationwide!")
+
+# ----------------- TAB 4: Marketing Ideas & Strategies -----------------
+with tab_ideas:
+    st.subheader("💡 Viral Marketing & Content Growth Tips")
+    col_i1, col_i2 = st.columns(2)
+    with col_i1:
+        st.markdown("""
+        #### 📈 အရောင်းတက်စေမည့် စိတ်ပညာ နည်းလမ်းများ
+        1. **Scarcity (အရေအတွက် ကန့်သတ်ခြင်း)** - "ပစ္စည်း အခု ၂၀ သာ ကျန်ရှိပါသည်" ဟု ထည့်သွင်းခြင်းက ဝယ်ယူလိုစိတ်ကို ၂ ဆ မြှင့်တင်ပေးပါသည်။
+        2. **Social Proof (ယုံကြည်မှု တည်ဆောက်ခြင်း)** - အရင်ဝယ်ယူသူများ၏ Review ဓာတ်ပုံများကို အမြဲ တွဲတင်ပါ။
+        3. **Risk-Free Guarantee** - "မကြိုက်ပါက ငွေအပြည့်ပြန်အမ်းသည်" ဟူသော ကတိသည် မဝယ်ဝံ့သူများကို ချက်ချင်း ဝယ်ယူစေပါသည်။
+        """)
+    with col_i2:
+        st.markdown("""
+        #### 🎵 TikTok & Reels Algo ဆွဲဆောင်နည်း
+        1. **ပထမ ၃ စက္ကန့် စည်းမျဉ်း** - အစ ၃ စက္ကန့်အတွင်း စကားအပို မပြောဘဲ စိတ်ဝင်စားစရာ အချက်ကို တန်းပြပါ။
+        2. **Save & Share များအောင် လုပ်ပါ** - "နောက်မှ ပြန်ကြည့်ဖို့ Save လုပ်ထားပါ" ဟု တိုက်တွန်းပါ။
+        3. **မြန်မာ+ထိုင်း နယ်စပ်စျေးကွက်** - ထိုင်းပစ္စည်းတင်သွင်းသူများအတွက် ထိုင်းဘာသာစကားနှင့် မြန်မာဘာသာစကား တွဲဖက်သုံးပါက စျေးရောင်းအား ပိုတက်ပါသည်။
+        """)
 
 st.markdown("---")
-st.caption("© 2026 AI E-Commerce & Marketing Studio • Built with Streamlit & YTZA")
+st.markdown("<center style='color: #64748B;'>© 2026 Mya Marketing AI Studio • Designed for High-Growth Creators & Sellers</center>", unsafe_allow_html=True)
